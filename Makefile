@@ -63,6 +63,7 @@ ui-install:
 
 ui-build:
 	@echo "  🛠  Building UI into ./public"
+	@mkdir -p ./public
 	@cd ui && ./node_modules/.bin/browserify -r min-document --igv __filename,__dirname,_process -t [ babelify --presets [ es2015 ] ] client-side.js > ../public/dist.js
 	@cd ui && cat *.css components/**/*.css > ../public/dist.css
 
