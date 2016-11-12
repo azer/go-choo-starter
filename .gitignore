@@ -5,3 +5,4 @@ public/dist.js
 public/dist.css
 server/vendor
 server/pkg
+server/bin
