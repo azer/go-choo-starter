@@ -21,7 +21,7 @@ cd hello-world
 make setup # Runs `go get` and `npm install` for you.
 ```
 
-### Usage
+### First Steps
 
 Here is how you start the server:
 
@@ -30,3 +30,16 @@ make develop
 ```
 
 `develop` watches your code (Go, JS and CSS) and applies changes immediately. If you don't need that, you can run `make start` and `make stop` commands. You should use these two commands when you're not actively changing your code.
+
+### Coding
+
+* Create UI components under `ui/components/` folder and route them at `ui/app.js`
+* Create API endpoints at `server/api.go` like the example there.
+* Use `make go-get` to fetch dependencies when you have new dependencies in the backend.
+* Any file under `./public` directory will be online at same path.
+* Run `make build` to build everything. Run `make go-build` and `make ui-build` to build each separately.
+* Run `make clean` to clean everything. Run `make go-clean` and `make ui-clean` to clean each separately.
+
+### Todo
+
+* Caching is not done yet. I'm still experimenting that part. 
