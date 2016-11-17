@@ -9,11 +9,7 @@ PID=/tmp/go-$(PROJECTNAME).pid
 UIBASE=$(shell pwd)/ui
 UIBIN=$(UIBASE)/node_modules/.bin
 
-all: default
-
-default:
-	@echo "\n  🐣  Starting the $(PROJECTNAME) server, watching changes in all your code.\n"
-	@$(MAKE) watch
+all: develop
 
 start:
 	@echo "  ▶️  Starting $(PROJECTNAME) at $(ADDR)"
@@ -29,10 +25,10 @@ restart: stop start
 build: go-build ui-build
 clean: go-clean ui-clean
 
-develop: build
+develop: go-get build
 	@DEVELOP=1 LOG=* $(MAKE) restart
 	@echo "  👓  Watching for changes..."
-	@fswatch -o server/**/*.go | xargs -n1 -I{} make restart || make stop
+	@fswatch server/. -e "server/bin" -e "server/pkg" | (while read; do DEVELOP=1 LOG=* make go-get clean build restart; done)
 
 setup:
 	@echo "  🔄  Please wait while I'm getting the dependencies of $(PROJECTNAME) from internet."
@@ -62,7 +58,7 @@ ui-install:
 	@cd ui && npm i
 
 ui-build:
-	@echo "  🛠  Building UI into ./public"
+	@echo "  🐣  Building UI into ./public"
 	@mkdir -p ./public
 	@cd ui && ./node_modules/.bin/browserify -r min-document --igv __filename,__dirname,_process -t [ babelify --presets [ es2015 ] ] client-side.js > ../public/dist.js
 	@cd ui && cat *.css components/**/*.css > ../public/dist.css
@@ -72,7 +68,7 @@ ui-clean:
 	@-rm public/{dist.js,dist.css} 2> /dev/null || true
 
 ui-build-serverside:
-	@cd ui && ./node_modules/.bin/browserify -r min-document --igv __filename,__dirname,_process -t [ babelify --presets [ es2015 ] ] server-side.js
+	@cd ui && ./node_modules/.bin/browserify -r min-document --igv __filename,__dirname,_process -t [ babelify --presets [ es2015 ] ] --debug server-side.js
 
 commands:
 	@echo "Commands: start, stop, restart, clean, go-build, go-get, go-install, go-run, go-rebuild, ui-build, ui-install, help"

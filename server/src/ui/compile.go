@@ -20,8 +20,6 @@ func CompileJS() (string, error) {
 }
 
 func BuildUI() error {
-	log.Info("Detected changes, rebuilding the UI.")
-
 	var stderr bytes.Buffer
 	cmd := exec.Command("make", "ui-build")
 	cmd.Stderr = &stderr
@@ -30,6 +28,8 @@ func BuildUI() error {
 	if err != nil {
 		return fmt.Errorf("%s: %s", err, stderr.String())
 	}
+
+	log.Info("UI assets has been compiled and saved into ./public directory.")
 
 	return nil
 }

@@ -1,14 +1,14 @@
 import choo from 'choo'
 import example from './components/example'
+import routes from "./routes"
 
 const app = choo()
 app.model(example)
+router(routes)
 
 export default app
-export const routes = router({
-  '/': example.view
-})
 
+// We need this extra function until Choo lets us get list of the routes easily
 function router (routes) {
   app.router(route => {
     const result = []

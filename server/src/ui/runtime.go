@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 )
@@ -19,23 +20,38 @@ func (runtime *Runtime) Browserify() error {
 	return nil
 }
 
-func (runtime *Runtime) Render(route string) (string, error) {
+func (runtime *Runtime) CleanCache() {
+	runtime.CachedSourceCode = ""
+}
+
+func (runtime *Runtime) CheckForErrors() error {
+	_, err := runtime.Render("/", nil)
+	return err
+}
+
+func (runtime *Runtime) Render(route string, state interface{}) (string, error) {
 	body, err := runtime.SourceCode()
 	if err != nil {
 		return "", err
 	}
 
-	html, err := EvalJS(fmt.Sprintf(`require = undefined;
+	encodedState, err := EncodeState(state)
+	if err != nil {
+		return "", err
+	}
+
+	html, err := EvalJS(fmt.Sprintf(`
   var app;
   %s
 
-  app.toString("%s")
+  app.toString("%s", %s)
 
   function start (_app) {
     app = _app;
   }`,
 		body,
 		route,
+		encodedState,
 	))
 
 	if err != nil {
@@ -51,12 +67,12 @@ func (runtime *Runtime) Routes() (map[string]bool, error) {
 		return nil, err
 	}
 
-	routes, err := EvalJS(fmt.Sprintf(`require = undefined;
+	routes, err := EvalJS(fmt.Sprintf(`
   var app;
   var routes;
   %s
 
-  routes.join(',')
+  Object.keys(routes).join(',')
 
   function start (_app, _routes) {
     app = _app;
@@ -89,4 +105,13 @@ func (runtime *Runtime) SourceCode() (string, error) {
 	}
 
 	return runtime.CachedSourceCode, nil
+}
+
+func EncodeState(state interface{}) (string, error) {
+	encoded, err := json.Marshal(state)
+	if err != nil {
+		return "", err
+	}
+
+	return string(encoded), nil
 }

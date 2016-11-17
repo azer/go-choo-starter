@@ -5,30 +5,33 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/engine/standard"
 	"os"
+	"ui"
 )
 
 func init() {
-	// Import env files
+	// Read env variables from .env file in the root directory
 	if err := godotenv.Load(); err != nil {
 		panic(err)
 	}
 }
 
 func main() {
-	api := API()
+	server := echo.New()
+	SetUIRoutes(server)
+	SetAPIRoutes(server)
 
 	// Setup static files
-	api.Static("/public", "./public")
-	api.Get("/favicon.ico", func(c echo.Context) error {
+	server.Static("/public", "./public")
+	server.Get("/favicon.ico", func(c echo.Context) error {
 		c.Redirect(301, "/public/favicon.ico")
 		return nil
 	})
 
 	// Watch & build front-end stuff if develop mode is enabled
 	if len(os.Getenv("DEVELOP")) > 0 {
-		go Develop()
+		go ui.WatchCodeChanges()
 	}
 
 	// And finally, run the server. You can edit the ADDR from .env file on the project folder.
-	api.Run(standard.New(os.Getenv("ADDR")))
+	server.Run(standard.New(os.Getenv("ADDR")))
 }

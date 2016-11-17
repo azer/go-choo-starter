@@ -4,6 +4,7 @@
     "babelify": "^7.3.0",
     "browserify": "^13.1.1",
     "choo": "^3.3.0",
+    "exorcist": "^0.4.0",
     "watchify": "^3.7.0"
   }
 }
