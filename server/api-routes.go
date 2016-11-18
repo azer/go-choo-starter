@@ -7,7 +7,7 @@ import (
 
 // Set all your API endpoints in this function, on top of the file
 func SetAPIRoutes(server *echo.Echo) {
-	server.Get("/api/hi", Hi)
+	server.GET("/api/hi", Hi)
 }
 
 // And create the handlers after that

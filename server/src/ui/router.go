@@ -51,7 +51,7 @@ func IsValidUIRoute(path string) (bool, error) {
 
 func HTTPHandler(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		path := c.Request().URL().Path()
+		path := c.Request().URL.Path
 
 		if ok, err := IsValidUIRoute(path); err != nil {
 			return err

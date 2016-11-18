@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo"
-	"github.com/labstack/echo/engine/standard"
 	"os"
 	"ui"
 )
@@ -22,7 +21,7 @@ func main() {
 
 	// Setup static files
 	server.Static("/public", "./public")
-	server.Get("/favicon.ico", func(c echo.Context) error {
+	server.GET("/favicon.ico", func(c echo.Context) error {
 		c.Redirect(301, "/public/favicon.ico")
 		return nil
 	})
@@ -33,5 +32,5 @@ func main() {
 	}
 
 	// And finally, run the server. You can edit the ADDR from .env file on the project folder.
-	server.Run(standard.New(os.Getenv("ADDR")))
+	server.Start(os.Getenv("ADDR"))
 }
