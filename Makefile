@@ -25,10 +25,10 @@ restart: stop start
 build: go-build ui-build
 clean: go-clean ui-clean
 
-develop: go-get build
+develop: setup build
 	@DEVELOP=1 LOG=* $(MAKE) restart
 	@echo "  👓  Watching for changes..."
-	@fswatch server/. -e "server/bin" -e "server/pkg" | (while read; do DEVELOP=1 LOG=* make go-get clean build restart; done)
+	@fswatch server/. -e "server/bin" -e "server/pkg" | (while read; do DEVELOP=1 LOG=* make setup clean build restart; done)
 
 setup:
 	@echo "  🔄  Please wait while I'm getting the dependencies of $(PROJECTNAME) from internet."
@@ -55,7 +55,7 @@ go-clean:
 go-rebuild: go-clean go-build
 
 ui-install:
-	@cd ui && npm i
+	@cd ui && npm install --silent
 
 ui-build:
 	@echo "  🐣  Building UI into ./public"
@@ -70,10 +70,45 @@ ui-clean:
 ui-build-serverside:
 	@cd ui && ./node_modules/.bin/browserify -r min-document --igv __filename,__dirname,_process -t [ babelify --presets [ es2015 ] ] --debug server-side.js
 
+export COMPONENT_INDEX
+export COMPONENT_VIEW
+create-component:
+  define COMPONENT_INDEX
+import view from './view'
+import state from './state'
+import * as reducers from './reducers'
+import * as effects from './effects'
+
+export default {
+  namespace: '$(name)',
+  view,
+  state,
+  reducers,
+	effects
+}
+  endef
+
+define COMPONENT_VIEW
+import html from "choo/html"
+
+const view = (state, prev, send) => html`
+$(name)
+`
+
+export default view
+  endef
+
+	@mkdir ui/components/${name}
+	@echo "$$COMPONENT_INDEX" > ui/components/${name}/index.js
+	@echo "$$COMPONENT_VIEW" > ui/components/${name}/view.js
+	@echo "export default {}" > ui/components/${name}/reducers.js
+	@echo "export default {}" > ui/components/${name}/effects.js
+	@echo "export default {}" > ui/components/${name}/state.js
+
 commands:
-	@echo "Commands: start, stop, restart, clean, go-build, go-get, go-install, go-run, go-rebuild, ui-build, ui-install, help"
+	@cat docs/man
 
 usage: commands
 help: commands
 
-.PHONY: default go-build go-get go-install go-run go-rebuild start stop restart clean
+.PHONY: default go-build go-get go-install go-run go-rebuild go-clean ui-build ui-clean ui-build-serverside start stop restart clean commands help usage

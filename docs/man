@@ -1,0 +1,27 @@
+
+    USAGE
+
+        make [command]
+
+    COMMANDS
+
+      develop
+      start
+      stop
+      restart
+      setup
+      clean
+      help
+
+      go-build
+      go-get
+      go-install
+      go-run
+      go-rebuild
+      go-clean
+
+      ui-install
+      ui-build
+      ui-clean
+
+      create-component
