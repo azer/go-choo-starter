@@ -73,30 +73,30 @@ ui-build-serverside:
 export COMPONENT_INDEX
 export COMPONENT_VIEW
 create-component:
-  define COMPONENT_INDEX
-import view from './view'
-import state from './state'
-import * as reducers from './reducers'
-import * as effects from './effects'
+	define COMPONENT_INDEX
+		import view from './view'
+		import state from './state'
+		import * as reducers from './reducers'
+		import * as effects from './effects'
 
-export default {
-  namespace: '$(name)',
-  view,
-  state,
-  reducers,
-	effects
-}
-  endef
+	export default {
+		namespace: '$(name)',
+		view,
+		state,
+		reducers,
+		effects
+	}
+	endef
 
-define COMPONENT_VIEW
-import html from "choo/html"
+	define COMPONENT_VIEW
+		import html from "choo/html"
 
-const view = (state, prev, send) => html`
-$(name)
-`
+		const view = (state, prev, send) => html`
+			$(name)
+		`
 
-export default view
-  endef
+		export default view
+	endef
 
 	@mkdir ui/components/${name}
 	@echo "$$COMPONENT_INDEX" > ui/components/${name}/index.js
