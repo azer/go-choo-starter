@@ -35,8 +35,11 @@ func WatchCodeChanges() {
 		lastchange = now
 
 		BuildUI()
+
 		runtime.CleanCache()
 		CheckRuntimeErrors()
+
+		loadIndexHTML()
 	})
 }
 

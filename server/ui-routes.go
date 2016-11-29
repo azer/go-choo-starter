@@ -17,7 +17,7 @@ func SetUIRoutes(server *echo.Echo) {
 }
 
 /*func ExampleForm(c echo.Context) error {
-	return ui.Route(c, "/", &struct {
+	return ui.Render(c, "/", &struct {
 		ExampleTitle string `json:"title"`
 	}{"Hello From The Server-side"})
 }*/

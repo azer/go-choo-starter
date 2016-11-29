@@ -3,11 +3,13 @@ package ui
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/azer/url-router"
 	"strings"
 )
 
 type Runtime struct {
 	CachedSourceCode string
+	Routes           *urlrouter.Router
 }
 
 func (runtime *Runtime) Browserify() error {
@@ -21,7 +23,10 @@ func (runtime *Runtime) Browserify() error {
 }
 
 func (runtime *Runtime) CleanCache() {
+	log.Info("Clearing JS runtime cache...")
+
 	runtime.CachedSourceCode = ""
+	runtime.Routes = nil
 }
 
 func (runtime *Runtime) CheckForErrors() error {
@@ -61,10 +66,16 @@ func (runtime *Runtime) Render(route string, state interface{}) (string, error) 
 	return html, nil
 }
 
-func (runtime *Runtime) Routes() (map[string]bool, error) {
+func (runtime *Runtime) SyncRoutes() error {
+	if runtime.Routes != nil {
+		return nil
+	}
+
+	log.Info("Syncing UI and server-side routes...")
+
 	body, err := runtime.SourceCode()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	routes, err := EvalJS(fmt.Sprintf(`
@@ -82,17 +93,17 @@ func (runtime *Runtime) Routes() (map[string]bool, error) {
 	))
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
+	runtime.Routes = urlrouter.New()
 	paths := strings.Split(routes, ",")
-	result := map[string]bool{}
 
 	for _, path := range paths {
-		result[path] = true
+		runtime.Routes.Add(path)
 	}
 
-	return result, nil
+	return nil
 }
 
 func (runtime *Runtime) SourceCode() (string, error) {
