@@ -39,7 +39,3 @@ make develop
 * Any file under `./public` directory will be online at same path.
 * Run `make build` to build everything. Run `make go-build` and `make ui-build` to build each separately.
 * Run `make clean` to clean everything. Run `make go-clean` and `make ui-clean` to clean each separately.
-
-### Todo
-
-* Caching is not done yet. I'm still experimenting that part. 
