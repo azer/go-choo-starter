@@ -44,5 +44,5 @@ func WatchCodeChanges() {
 }
 
 func filter(name string, info os.FileInfo) bool {
-	return !info.IsDir() && !strings.Contains(name, "node_modules/")
+	return (info != nil && !info.IsDir()) && !strings.Contains(name, "node_modules/")
 }

@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 )
 
+var cache = NewCache()
 var log = logger.New("ui")
 var runtime *Runtime
 var indexhtml string

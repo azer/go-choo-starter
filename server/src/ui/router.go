@@ -13,16 +13,24 @@ func Render(c echo.Context, path string, state *State) error {
 		return err
 	}
 
-	return c.HTML(http.StatusOK, fmt.Sprintf(indexhtml, body))
+	html := fmt.Sprintf(indexhtml, body)
+	cache.Set(path, html)
+
+	return c.HTML(http.StatusOK, html)
 }
 
 func HTTPHandler(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
+		path := c.Request().URL.Path
+
+		if html, ok := cache.Get(path); ok {
+			return c.HTML(http.StatusOK, html)
+		}
+
 		if err := runtime.SyncRoutes(); err != nil {
 			return err
 		}
 
-		path := c.Request().URL.Path
 		match := runtime.Routes.Match(path)
 
 		if match == nil {
