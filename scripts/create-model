@@ -1,0 +1,21 @@
+createModel () {
+  mkdir src/ui/models/$1
+  cat > src/ui/models/$1/index.js <<- EOM
+import state from './state'
+import * as reducers from './reducers'
+import * as effects from './effects'
+
+export default {
+  namespace: '$(name)',
+  state,
+  reducers,
+  effects
+}
+EOM
+
+  echo "module.exports = {}" > ui/models/$1/state.js
+  echo "module.exports = {}" > ui/models/$1/reducers.js
+  echo "module.exports = {}" > ui/models/$1/effects.js
+}
+
+createModel $1

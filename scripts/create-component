@@ -1,0 +1,36 @@
+createComponent () {
+  mkdir ui/components/$1
+  cat > ui/components/$1/index.js <<- EOM
+import view from './view'
+import state from './state'
+import * as reducers from './reducers'
+import * as effects from './effects'
+
+export default {
+  namespace: '$1',
+  view,
+  state,
+	reducers,
+	effects
+}
+EOM
+
+
+  cat > ui/components/$1/view.js <<- EOM
+import html from "choo/html"
+
+export default (state, prev, send) => html\`
+<div class='$1'>
+</div>
+\`
+EOM
+
+  @mkdir ui/components/${name}
+	@echo "$$COMPONENT_INDEX" > ui/components/${name}/index.js
+	@echo "$$COMPONENT_VIEW" > ui/components/${name}/view.js
+	@echo "export default {}" > ui/components/${name}/reducers.js
+	@echo "export default {}" > ui/components/${name}/effects.js
+	@echo "export default {}" > ui/components/${name}/state.js
+}
+
+createComponent $1
